@@ -88,6 +88,44 @@ createGallery(images);
 
 galleryContainer.addEventListener("click", (event) => {
   if (event.target === event.currentTarget) return;
-  event.preventDefault;
-  openGalleryModal();
+  event.preventDefault();
+  const selectedImage = images.find(
+    (image) => image.original === event.target.dataset.source
+  );
+  openGalleryModal(selectedImage);
 });
+
+function openGalleryModal(image) {
+  const modal = basicLightbox.create(
+    `
+     <img
+       class="gallery-image"
+       src="${image.preview}"
+       data-source="${image.original}"
+       alt="${image.description}"
+     />
+ `,
+    {
+      onShow: (instance) => {
+        console.log("ADD LISTENER");
+        const imageElement = instance.element().querySelector(".gallery-image");
+        imageElement.style.maxWidth = "1112px";
+        imageElement.style.maxHeight = "600px";
+        document.addEventListener("keydown", onModalClose);
+      },
+      onClose: (instance) => {
+        console.log("REMOVE LISTENER");
+        document.removeEventListener("keydown", onModalClose);
+      },
+    }
+  );
+
+  modal.show();
+
+  function onModalClose(event) {
+    console.log(event.code);
+    if (event.code === "Escape") {
+      modal.close();
+    }
+  }
+}
