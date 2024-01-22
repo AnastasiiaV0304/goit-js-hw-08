@@ -87,34 +87,26 @@ function createGallery(images) {
 createGallery(images);
 
 galleryContainer.addEventListener("click", (event) => {
-  if (event.target === event.currentTarget) return;
   event.preventDefault();
-  const selectedImage = images.find(
-    (image) => image.original === event.target.dataset.source
-  );
+  if (event.target === event.currentTarget) return;
+  const liImg = event.target;
+  const dataSource = liImg.dataset.source;
+  const selectedImage = images.find((el) => el.original === dataSource);
   openGalleryModal(selectedImage);
 });
 
 function openGalleryModal(image) {
   const modal = basicLightbox.create(
-    `
-     <img
-       class="gallery-image"
-       src="${image.preview}"
-       data-source="${image.original}"
-       alt="${image.description}"
-     />
- `,
+    `<img
+      class="gallery-image"
+      src="${image.original}"
+      alt="${image.description}"
+    />`,
     {
       onShow: (instance) => {
-        console.log("ADD LISTENER");
-        const imageElement = instance.element().querySelector(".gallery-image");
-        imageElement.style.maxWidth = "1112px";
-        imageElement.style.maxHeight = "600px";
         document.addEventListener("keydown", onModalClose);
       },
       onClose: (instance) => {
-        console.log("REMOVE LISTENER");
         document.removeEventListener("keydown", onModalClose);
       },
     }
